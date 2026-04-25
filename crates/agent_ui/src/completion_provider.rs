@@ -2551,11 +2551,11 @@ mod tests {
     async fn test_filter_sessions_by_query(cx: &mut TestAppContext) {
         let alpha = SessionMatch {
             session_id: acp::SessionId::new("session-alpha"),
-            title: "Alpha Session".into(),
+            title: "Сессия Альфа".into(),
         };
         let beta = SessionMatch {
             session_id: acp::SessionId::new("session-beta"),
-            title: "Beta Session".into(),
+            title: "Сессия Бета".into(),
         };
 
         let sessions = vec![alpha.clone(), beta];

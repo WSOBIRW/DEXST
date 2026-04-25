@@ -740,7 +740,7 @@ mod tests {
         ) -> Task<Option<TaskTemplates>> {
             Task::ready(Some(TaskTemplates(vec![
                 TaskTemplate {
-                    label: "Run main".into(),
+                    label: "Запустить main".into(),
                     command: "cargo".into(),
                     args: vec!["run".into()],
                     tags: vec!["rust-main".into()],
