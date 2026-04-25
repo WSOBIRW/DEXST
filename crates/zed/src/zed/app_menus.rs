@@ -106,7 +106,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Файл".into(),
+            name: dextr_locale::t("menu.file").into(),
             disabled: false,
             items: vec![
                 MenuItem::action("New", workspace::NewFile),
@@ -154,7 +154,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Правка".into(),
+            name: dextr_locale::t("menu.edit").into(),
             disabled: false,
             items: vec![
                 MenuItem::os_action("Undo", editor::actions::Undo, OsAction::Undo),
@@ -175,7 +175,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Selection".into(),
+            name: dextr_locale::t("menu.selection").into(),
             disabled: false,
             items: vec![
                 MenuItem::os_action(
@@ -223,12 +223,12 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Вид".into(),
+            name: dextr_locale::t("menu.view").into(),
             disabled: false,
             items: view_items,
         },
         Menu {
-            name: "Go".into(),
+            name: dextr_locale::t("menu.go").into(),
             disabled: false,
             items: vec![
                 MenuItem::action("Back", workspace::GoBack),
@@ -260,7 +260,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Run".into(),
+            name: dextr_locale::t("menu.run").into(),
             disabled: false,
             items: vec![
                 MenuItem::action(
@@ -285,7 +285,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Window".into(),
+            name: dextr_locale::t("menu.window").into(),
             disabled: false,
             items: vec![
                 MenuItem::action("Minimize", super::Minimize),
@@ -294,7 +294,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Помощь".into(),
+            name: dextr_locale::t("menu.help").into(),
             disabled: false,
             items: vec![
                 MenuItem::action(

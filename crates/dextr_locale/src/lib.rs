@@ -18,6 +18,10 @@ pub fn t(key: &'static str) -> &'static str {
         "panel.git" => "Git",
         "panel.collab" => "Совместная работа",
 
+        "menu.selection" => "Выделение",
+        "menu.go" => "Переход",
+        "menu.run" => "Запуск",
+        "menu.window" => "Окно",
         _ => key,
     }
 }
