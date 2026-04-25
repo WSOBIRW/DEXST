@@ -695,6 +695,35 @@ impl PickerDelegate for CommandPaletteDelegate {
 }
 
 pub fn humanize_action_name(name: &str) -> String {
+    // DEXTR: русская локализация (временный встроенный словарь)
+    match name {
+        "editor::Cancel" => return "Отмена".to_string(),
+        "workspace::NewFile" => return "Новый файл".to_string(),
+        "workspace::Save" => return "Сохранить".to_string(),
+        "workspace::CloseActiveItem" => return "Закрыть вкладку".to_string(),
+        "workspace::CloseWindow" => return "Закрыть окно".to_string(),
+        "pane::GoBack" => return "Назад".to_string(),
+        "pane::GoForward" => return "Вперёд".to_string(),
+        "editor::GoToDefinition" => return "Перейти к определению".to_string(),
+        "editor::Backspace" => return "Удалить символ слева".to_string(),
+        "editor::Newline" => return "Новая строка".to_string(),
+        "editor::Cut" => return "Вырезать".to_string(),
+        "editor::Copy" => return "Копировать".to_string(),
+        "editor::Paste" => return "Вставить".to_string(),
+        "editor::Undo" => return "Отменить".to_string(),
+        "editor::Redo" => return "Повторить".to_string(),
+        "editor::SelectAll" => return "Выделить всё".to_string(),
+        "editor::MoveToBeginningOfLine" => return "В начало строки".to_string(),
+        "editor::MoveToEndOfLine" => return "В конец строки".to_string(),
+        "search::Search" => return "Поиск".to_string(),
+        "search::Replace" => return "Замена".to_string(),
+        "project::NewFolder" => return "Новая папка".to_string(),
+        "project::Rename" => return "Переименовать".to_string(),
+        "project::Delete" => return "Удалить".to_string(),
+        "terminal::Open" => return "Открыть терминал".to_string(),
+        _ => {}
+    }
+
     let capacity = name.len() + name.chars().filter(|c| c.is_uppercase()).count();
     let mut result = String::with_capacity(capacity);
     for char in name.chars() {

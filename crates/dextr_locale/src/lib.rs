@@ -1,5 +1,3 @@
-/// Система локализации DEXTR STUDIO.
-/// Возвращает перевод для ключа, либо сам ключ, если перевод отсутствует.
 pub fn t(key: &'static str) -> &'static str {
     match key {
         // Главное меню
@@ -20,13 +18,6 @@ pub fn t(key: &'static str) -> &'static str {
         "panel.git" => "Git",
         "panel.collab" => "Совместная работа",
 
-        // Действия
-        "action.open_workspace" => "Открыть рабочее пространство",
-        "action.close_workspace" => "Закрыть рабочее пространство",
-        "action.search" => "Поиск",
-        "action.go_to_definition" => "Перейти к определению",
-
-        // Все остальные ключи остаются как есть (английские)
         _ => key,
     }
 }
