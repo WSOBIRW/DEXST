@@ -1403,7 +1403,7 @@ impl GitPanel {
                             .unwrap_or(entry.repo_path.display(path_style).as_ref()),
                     ),
                     None,
-                    &["Discard Changes", "Cancel"],
+                    &["Discard Changes", "Отмена"],
                     cx,
                 );
                 cx.background_spawn(prompt)
@@ -4626,7 +4626,7 @@ impl GitPanel {
                     ),
             )
             .child(
-                panel_button("Cancel")
+                panel_button("Отмена")
                     .size(ButtonSize::Default)
                     .on_click(cx.listener(|this, _, _, cx| this.set_amend_pending(false, cx))),
             )

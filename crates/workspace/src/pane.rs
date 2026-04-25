@@ -1996,7 +1996,7 @@ impl Pane {
                         PromptLevel::Warning,
                         "Do you want to save changes to the following files?",
                         Some(&detail),
-                        &["Save all", "Discard all", "Cancel"],
+                        &["Save all", "Discard all", "Отмена"],
                         cx,
                     )
                 })?;
@@ -2038,7 +2038,7 @@ impl Pane {
                                     PromptLevel::Warning,
                                     &format!("Unable to save file: {}", &err),
                                     Some(&detail),
-                                    &["Close Without Saving", "Cancel"],
+                                    &["Close Without Saving", "Отмена"],
                                     cx,
                                 )
                             })?;
@@ -2308,7 +2308,7 @@ impl Pane {
                         PromptLevel::Warning,
                         DELETED_MESSAGE,
                         None,
-                        &["Save", "Close", "Cancel"],
+                        &["Save", "Close", "Отмена"],
                         cx,
                     )
                 })?;
@@ -2343,7 +2343,7 @@ impl Pane {
                         PromptLevel::Warning,
                         CONFLICT_MESSAGE,
                         None,
-                        &["Overwrite", "Discard", "Cancel"],
+                        &["Overwrite", "Discard", "Отмена"],
                         cx,
                     )
                 })?;
@@ -2386,7 +2386,7 @@ impl Pane {
                                 PromptLevel::Warning,
                                 &prompt,
                                 None,
-                                &["Save", "Don't Save", "Cancel"],
+                                &["Save", "Don't Save", "Отмена"],
                                 cx,
                             ))
                         } else {
@@ -7931,7 +7931,7 @@ mod tests {
         });
 
         cx.executor().run_until_parked();
-        cx.simulate_prompt_answer("Cancel");
+        cx.simulate_prompt_answer("Отмена");
         close_task.await.unwrap();
         assert_item_labels(&pane, ["Dirty*^"], cx);
     }

@@ -787,7 +787,7 @@ mod tests {
             event,
             project::Event::Toast {
                 notification_id: "git-blame".into(),
-                message: "Failed to blame \"file.txt\": failed to get blame for \"file.txt\""
+                message: "Не удалось получить blame для \"file.txt\""
                     .to_string(),
                 link: None
             }

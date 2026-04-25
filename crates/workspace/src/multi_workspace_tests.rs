@@ -816,7 +816,7 @@ async fn test_open_project_closes_empty_workspace_but_not_non_empty_ones(cx: &mu
 
     // Cancelling keeps the empty workspace.
     assert!(cx.has_pending_prompt(),);
-    cx.simulate_prompt_answer("Cancel");
+    cx.simulate_prompt_answer("Отмена");
     cx.run_until_parked();
     assert_eq!(open_task.await.unwrap(), empty_workspace);
     window

@@ -3255,7 +3255,7 @@ impl Workspace {
                             PromptLevel::Warning,
                             "Do you want to leave the current call?",
                             None,
-                            &["Close window and hang up", "Cancel"],
+                            &["Close window and hang up", "Отмена"],
                             cx,
                         )
                     })?;
@@ -3476,7 +3476,7 @@ impl Workspace {
                             PromptLevel::Warning,
                             "Do you want to save all changes in the following files?",
                             Some(&detail),
-                            &["Save all", "Discard all", "Cancel"],
+                            &["Save all", "Discard all", "Отмена"],
                             cx,
                         )
                     })?;
@@ -9079,7 +9079,7 @@ async fn join_channel_internal(
                         PromptLevel::Warning,
                         "Do you want to switch channels?",
                         Some("Leaving this call will unshare your current project."),
-                        &["Yes, Join Channel", "Cancel"],
+                        &["Yes, Join Channel", "Отмена"],
                         cx,
                     )
                 })?
@@ -10250,7 +10250,7 @@ pub fn reload(cx: &mut App) {
                     PromptLevel::Info,
                     "Are you sure you want to restart?",
                     None,
-                    &["Restart", "Cancel"],
+                    &["Restart", "Отмена"],
                     cx,
                 )
             })
@@ -11152,7 +11152,7 @@ mod tests {
             w.prepare_to_close(CloseIntent::CloseWindow, window, cx)
         });
         cx.executor().run_until_parked();
-        cx.simulate_prompt_answer("Cancel"); // cancel save all
+        cx.simulate_prompt_answer("Отмена"); // cancel save all
         cx.executor().run_until_parked();
         assert!(!cx.has_pending_prompt());
         assert!(!task.await.unwrap());
@@ -11235,7 +11235,7 @@ mod tests {
             .unwrap();
 
         // User cancels the save prompt from workspace B
-        cx.simulate_prompt_answer("Cancel");
+        cx.simulate_prompt_answer("Отмена");
         cx.run_until_parked();
 
         // Window should still exist because workspace B's close was cancelled
@@ -11307,7 +11307,7 @@ mod tests {
             .unwrap();
 
         // Cancel the prompt — user stays on workspace B.
-        cx.simulate_prompt_answer("Cancel");
+        cx.simulate_prompt_answer("Отмена");
         cx.run_until_parked();
         let removed = remove_task.await.unwrap();
         assert!(!removed, "removal should have been cancelled");
@@ -11645,7 +11645,7 @@ mod tests {
 
         // With best-effort close, cancelling item 1 keeps it open but items 4
         // and (3,4) still close since their entries exist in left pane.
-        cx.simulate_prompt_answer("Cancel");
+        cx.simulate_prompt_answer("Отмена");
         close.await;
 
         right_pane.read_with(cx, |pane, _| {

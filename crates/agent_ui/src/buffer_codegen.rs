@@ -531,7 +531,7 @@ impl CodegenAlternative {
                 },
                 LanguageModelRequestTool {
                     name: FAILURE_MESSAGE_TOOL_NAME.to_string(),
-                    description: "Use this tool to provide a message to the user when you're unable to complete a task.".to_string(),
+                    description: "Используйте этот инструмент, чтобы сообщить пользователю, когда задача не может быть выполнена.".to_string(),
                     input_schema: language_model::tool_schema::root_schema_for::<FailureMessageInput>(tool_input_format).to_value(),
                     use_input_streaming: false,
                 },

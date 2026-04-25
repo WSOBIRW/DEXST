@@ -175,7 +175,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: dextr_locale::t("menu.selection").into(),
+            name: "Выделение".into(),
             disabled: false,
             items: vec![
                 MenuItem::os_action(
@@ -228,7 +228,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             items: view_items,
         },
         Menu {
-            name: dextr_locale::t("menu.go").into(),
+            name: "Переход".into(),
             disabled: false,
             items: vec![
                 MenuItem::action("Back", workspace::GoBack),
@@ -260,7 +260,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: dextr_locale::t("menu.run").into(),
+            name: "Запуск".into(),
             disabled: false,
             items: vec![
                 MenuItem::action(
@@ -285,7 +285,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: dextr_locale::t("menu.window").into(),
+            name: "Окно".into(),
             disabled: false,
             items: vec![
                 MenuItem::action("Minimize", super::Minimize),

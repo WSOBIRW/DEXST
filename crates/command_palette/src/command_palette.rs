@@ -721,6 +721,17 @@ pub fn humanize_action_name(name: &str) -> String {
         "project::Rename" => return "Переименовать".to_string(),
         "project::Delete" => return "Удалить".to_string(),
         "terminal::Open" => return "Открыть терминал".to_string(),
+        "editor::ToggleComments" => return "Закомментировать/Раскомментировать".to_string(),
+        "editor::DuplicateLine" => return "Дублировать строку".to_string(),
+        "editor::MoveLineUp" => return "Переместить строку вверх".to_string(),
+        "editor::MoveLineDown" => return "Переместить строку вниз".to_string(),
+        "pane::SplitRight" => return "Разделить панель вправо".to_string(),
+        "pane::SplitDown" => return "Разделить панель вниз".to_string(),
+        "pane::CloseInactiveItems" => return "Закрыть неактивные вкладки".to_string(),
+        "search::FindAllReferences" => return "Найти все ссылки".to_string(),
+        "project::Search" => return "Поиск по проекту".to_string(),
+        "terminal::Toggle" => return "Переключить терминал".to_string(),
+        "git::Commit" => return "Сделать коммит".to_string(),
         _ => {}
     }
 
