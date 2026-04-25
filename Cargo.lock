@@ -4921,6 +4921,42 @@ dependencies = [
 ]
 
 [[package]]
+name = "dextr_ai_bus"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_audit"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_config"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_daic"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_runtime"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_safety"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_session_ai_relay"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_workspace"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "toml 0.8.23",
+]
+
+[[package]]
 name = "diagnostics"
 version = "0.1.0"
 dependencies = [
@@ -22426,6 +22462,7 @@ dependencies = [
  "debugger_tools",
  "debugger_ui",
  "dev_container",
+ "dextr_workspace",
  "diagnostics",
  "edit_prediction",
  "edit_prediction_ui",

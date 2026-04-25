@@ -27,6 +27,7 @@ use gpui::{
 use gpui_platform;
 
 use gpui_tokio::Tokio;
+use dextr_workspace;
 use language::LanguageRegistry;
 use onboarding::{FIRST_OPEN, show_onboarding_view};
 use project_panel::ProjectPanel;
@@ -179,6 +180,13 @@ fn fail_to_open_window(e: anyhow::Error, _cx: &mut App) {
 static STARTUP_TIME: OnceLock<Instant> = OnceLock::new();
 
 fn main() {
+    unsafe { std::env::set_var("ZED_TELEMETRY", "0"); }
+    // DEXTR: инициализация workspace в текущей директории
+    if let Ok(current_dir) = std::env::current_dir() {
+        if let Err(e) = dextr_workspace::DextrWorkspace::open(&current_dir) {
+            eprintln!("DEXTR workspace init failed: {}", e);
+        }
+    }
     STARTUP_TIME.get_or_init(|| Instant::now());
 
     #[cfg(unix)]
