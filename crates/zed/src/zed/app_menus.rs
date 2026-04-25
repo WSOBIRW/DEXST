@@ -1,3 +1,4 @@
+use dextr_locale;
 use collab_ui::collab_panel;
 use gpui::{App, Menu, MenuItem, OsAction};
 use release_channel::ReleaseChannel;
@@ -105,7 +106,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "File".into(),
+            name: "Файл".into(),
             disabled: false,
             items: vec![
                 MenuItem::action("New", workspace::NewFile),
@@ -153,7 +154,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Edit".into(),
+            name: "Правка".into(),
             disabled: false,
             items: vec![
                 MenuItem::os_action("Undo", editor::actions::Undo, OsAction::Undo),
@@ -222,7 +223,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "View".into(),
+            name: "Вид".into(),
             disabled: false,
             items: view_items,
         },
@@ -293,7 +294,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         },
         Menu {
-            name: "Help".into(),
+            name: "Помощь".into(),
             disabled: false,
             items: vec![
                 MenuItem::action(

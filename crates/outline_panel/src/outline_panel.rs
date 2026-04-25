@@ -1,3 +1,4 @@
+use dextr_locale;
 mod outline_panel_settings;
 
 use anyhow::Context as _;
@@ -4873,7 +4874,7 @@ fn file_name(path: &Path) -> String {
 
 impl Panel for OutlinePanel {
     fn persistent_name() -> &'static str {
-        "Outline Panel"
+        dextr_locale::t("panel.outline")
     }
 
     fn panel_key() -> &'static str {
@@ -4912,7 +4913,7 @@ impl Panel for OutlinePanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _: &App) -> Option<&'static str> {
-        Some("Outline Panel")
+        Some(dextr_locale::t("panel.outline"))
     }
 
     fn toggle_action(&self) -> Box<dyn Action> {

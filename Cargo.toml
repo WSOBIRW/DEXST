@@ -233,6 +233,7 @@ members = [
     "crates/dextr_daic",
     "crates/dextr_ai_bus",
     "crates/dextr_session_ai_relay",
+    "crates/dextr_locale",
     "crates/zed_actions",
     "crates/zed_credentials_provider",
     "crates/zed_env_vars",

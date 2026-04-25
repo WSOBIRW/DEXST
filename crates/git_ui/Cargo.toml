@@ -16,6 +16,7 @@ path = "src/git_ui.rs"
 test-support = ["multi_buffer/test-support", "remote_connection/test-support"]
 
 [dependencies]
+dextr_locale = { path = "../dextr_locale" }
 agent_settings.workspace = true
 alacritty_terminal.workspace = true
 anyhow.workspace = true

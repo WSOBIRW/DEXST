@@ -1,3 +1,4 @@
+use dextr_locale;
 use crate::askpass_modal::AskPassModal;
 use crate::commit_modal::CommitModal;
 use crate::commit_tooltip::CommitTooltip;
@@ -2102,7 +2103,7 @@ impl GitPanel {
 
     fn on_commit(&mut self, _: &git::Commit, window: &mut Window, cx: &mut Context<Self>) {
         if self.commit(&self.commit_editor.focus_handle(cx), window, cx) {
-            telemetry::event!("Git Committed", source = "Git Panel");
+            telemetry::event!("Git Committed", source = dextr_locale::t("panel.git"));
         }
     }
 
@@ -2138,7 +2139,7 @@ impl GitPanel {
 
     fn on_amend(&mut self, _: &git::Amend, window: &mut Window, cx: &mut Context<Self>) {
         if self.amend(&self.commit_editor.focus_handle(cx), window, cx) {
-            telemetry::event!("Git Amended", source = "Git Panel");
+            telemetry::event!("Git Amended", source = dextr_locale::t("panel.git"));
         }
     }
 
@@ -4559,7 +4560,7 @@ impl GitPanel {
                 .on_click({
                     let git_panel = cx.weak_entity();
                     move |_, window, cx| {
-                        telemetry::event!("Git Committed", source = "Git Panel");
+                        telemetry::event!("Git Committed", source = dextr_locale::t("panel.git"));
                         git_panel
                             .update(cx, |git_panel, cx| {
                                 git_panel.commit_changes(
@@ -6029,7 +6030,7 @@ impl Panel for GitPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Git Panel")
+        Some(dextr_locale::t("panel.git"))
     }
 
     fn icon_label(&self, _: &Window, cx: &App) -> Option<String> {

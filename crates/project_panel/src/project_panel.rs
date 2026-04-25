@@ -1,3 +1,4 @@
+use dextr_locale;
 pub mod project_panel_settings;
 mod undo;
 mod utils;
@@ -7253,7 +7254,7 @@ impl Panel for ProjectPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Project Panel")
+        Some(dextr_locale::t("panel.project"))
     }
 
     fn toggle_action(&self) -> Box<dyn Action> {
@@ -7261,7 +7262,7 @@ impl Panel for ProjectPanel {
     }
 
     fn persistent_name() -> &'static str {
-        "Project Panel"
+        dextr_locale::t("panel.project")
     }
 
     fn panel_key() -> &'static str {

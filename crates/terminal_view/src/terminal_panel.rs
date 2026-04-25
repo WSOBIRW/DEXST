@@ -1,3 +1,4 @@
+use dextr_locale;
 use std::{cmp, path::PathBuf, process::ExitStatus, sync::Arc, time::Duration};
 
 use crate::{
@@ -1656,7 +1657,7 @@ impl Panel for TerminalPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Terminal Panel")
+        Some(dextr_locale::t("panel.terminal"))
     }
 
     fn toggle_action(&self) -> Box<dyn gpui::Action> {

@@ -1,3 +1,4 @@
+use dextr_locale;
 use crate::persistence::DebuggerPaneItem;
 use crate::session::DebugSession;
 use crate::session::running::RunningState;
@@ -1588,7 +1589,7 @@ impl Panel for DebugPanel {
 
     fn icon_tooltip(&self, _window: &Window, cx: &App) -> Option<&'static str> {
         if DebuggerSettings::get_global(cx).button {
-            Some("Debug Panel")
+            Some(dextr_locale::t("panel.debugger"))
         } else {
             None
         }

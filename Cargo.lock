@@ -364,6 +364,7 @@ dependencies = [
  "component",
  "context_server",
  "db",
+ "dextr_locale",
  "editor",
  "eval_utils",
  "extension",
@@ -3278,6 +3279,7 @@ dependencies = [
  "client",
  "collections",
  "db",
+ "dextr_locale",
  "editor",
  "futures 0.3.32",
  "fuzzy",
@@ -4718,6 +4720,7 @@ dependencies = [
  "dap_adapters",
  "db",
  "debugger_tools",
+ "dextr_locale",
  "editor",
  "feature_flags",
  "file_icons",
@@ -4934,6 +4937,10 @@ version = "0.1.0"
 
 [[package]]
 name = "dextr_daic"
+version = "0.1.0"
+
+[[package]]
+name = "dextr_locale"
 version = "0.1.0"
 
 [[package]]
@@ -7411,6 +7418,7 @@ dependencies = [
  "component",
  "ctor",
  "db",
+ "dextr_locale",
  "editor",
  "file_icons",
  "fs",
@@ -12096,6 +12104,7 @@ dependencies = [
  "async-channel 2.5.0",
  "collections",
  "db",
+ "dextr_locale",
  "editor",
  "file_icons",
  "futures 0.3.32",
@@ -13580,6 +13589,7 @@ dependencies = [
  "collections",
  "command_palette_hooks",
  "criterion",
+ "dextr_locale",
  "editor",
  "feature_flags",
  "file_icons",
@@ -17854,6 +17864,7 @@ dependencies = [
  "breadcrumbs",
  "collections",
  "db",
+ "dextr_locale",
  "dirs",
  "editor",
  "futures 0.3.32",
@@ -22462,6 +22473,7 @@ dependencies = [
  "debugger_tools",
  "debugger_ui",
  "dev_container",
+ "dextr_locale",
  "dextr_workspace",
  "diagnostics",
  "edit_prediction",

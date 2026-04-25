@@ -26,6 +26,7 @@ test-support = [
 ]
 
 [dependencies]
+dextr_locale = { path = "../dextr_locale" }
 alacritty_terminal.workspace = true
 anyhow.workspace = true
 bitflags.workspace = true

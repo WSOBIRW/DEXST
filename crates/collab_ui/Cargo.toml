@@ -29,6 +29,7 @@ test-support = [
 ]
 
 [dependencies]
+dextr_locale = { path = "../dextr_locale" }
 anyhow.workspace = true
 call.workspace = true
 channel.workspace = true

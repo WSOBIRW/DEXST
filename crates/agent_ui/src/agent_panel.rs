@@ -1,3 +1,4 @@
+use dextr_locale;
 use std::{
     path::PathBuf,
     rc::Rc,
@@ -2524,7 +2525,7 @@ impl Panel for AgentPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Agent Panel")
+        Some(dextr_locale::t("panel.ai"))
     }
 
     fn toggle_action(&self) -> Box<dyn Action> {
