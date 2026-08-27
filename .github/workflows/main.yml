@@ -1,0 +1,37 @@
+name: DEXST CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: never
+  CARGO_BUILD_JOBS: 2
+
+jobs:
+  check:
+    name: Проверка DEXST
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Получение исходного кода
+        uses: actions/checkout@v6
+
+      - name: Проверка Rust
+        run: |
+          rustc --version
+          cargo --version
+
+      - name: Проверка форматирования
+        run: cargo fmt --all -- --check
+
+      - name: Проверка workspace
+        run: cargo check --workspace
+
+      - name: Проверка тестов
+        run: cargo check --tests
