@@ -328,8 +328,12 @@ mod tests {
 
         let mut map = EconomicMap::new();
         map.add_node(
-            EconomicNode::new("asset", "Экономический объект", ValueForm::Other("тест".into()))
-                .unwrap(),
+            EconomicNode::new(
+                "asset",
+                "Экономический объект",
+                ValueForm::Other("тест".into()),
+            )
+            .unwrap(),
         )
         .unwrap();
 
