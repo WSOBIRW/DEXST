@@ -6,6 +6,9 @@
 
 #![forbid(unsafe_code)]
 
+pub mod evidence;
+pub use evidence::*;
+
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 
@@ -136,7 +139,13 @@ impl EconomicRelation {
         if from == to {
             return Err(DiscoveryError::SelfRelation(from));
         }
-        Ok(Self { id, from, to, kind, evidence_ref })
+        Ok(Self {
+            id,
+            from,
+            to,
+            kind,
+            evidence_ref,
+        })
     }
 }
 
@@ -252,7 +261,10 @@ impl ProfitEstimate {
             ("налоги", self.tax_costs_minor),
             ("сценарный убыток", self.downside_loss_minor),
             ("необходимый капитал", self.capital_required_minor),
-            ("альтернативная стоимость капитала", self.opportunity_cost_minor),
+            (
+                "альтернативная стоимость капитала",
+                self.opportunity_cost_minor,
+            ),
         ];
         for (name, value) in values {
             if value < 0 {
@@ -332,7 +344,9 @@ impl OpportunityHypothesis {
                 .relation(relation_id)
                 .ok_or_else(|| DiscoveryError::MissingRelation(relation_id.clone()))?;
             if !nodes.contains(relation.from.as_str()) || !nodes.contains(relation.to.as_str()) {
-                return Err(DiscoveryError::RelationOutsideHypothesis(relation_id.clone()));
+                return Err(DiscoveryError::RelationOutsideHypothesis(
+                    relation_id.clone(),
+                ));
             }
         }
         self.estimate.validate()
@@ -471,18 +485,32 @@ impl fmt::Display for DiscoveryError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::EmptyIdentifierOrLabel => write!(formatter, "пустой идентификатор или название"),
-            Self::EmptyHypothesisStructure => write!(formatter, "гипотеза не содержит объектов или отношений"),
+            Self::EmptyHypothesisStructure => {
+                write!(formatter, "гипотеза не содержит объектов или отношений")
+            },
             Self::DuplicateNode(id) => write!(formatter, "повторный экономический объект: {id}"),
             Self::DuplicateRelation(id) => write!(formatter, "повторное отношение: {id}"),
             Self::MissingNode(id) => write!(formatter, "экономический объект не найден: {id}"),
-            Self::MissingRelation(id) => write!(formatter, "экономическое отношение не найдено: {id}"),
-            Self::SelfRelation(id) => write!(formatter, "самоссылочное отношение не допускается: {id}"),
-            Self::RelationOutsideHypothesis(id) => write!(formatter, "отношение выходит за границы гипотезы: {id}"),
-            Self::DuplicateHypothesisReference => write!(formatter, "повторная ссылка внутри гипотезы"),
+            Self::MissingRelation(id) => {
+                write!(formatter, "экономическое отношение не найдено: {id}")
+            },
+            Self::SelfRelation(id) => {
+                write!(formatter, "самоссылочное отношение не допускается: {id}")
+            },
+            Self::RelationOutsideHypothesis(id) => {
+                write!(formatter, "отношение выходит за границы гипотезы: {id}")
+            },
+            Self::DuplicateHypothesisReference => {
+                write!(formatter, "повторная ссылка внутри гипотезы")
+            },
             Self::InvalidCurrencyCode(code) => write!(formatter, "некорректный код валюты: {code}"),
             Self::NegativeAmount(name) => write!(formatter, "отрицательное значение поля: {name}"),
-            Self::ZeroCapitalRequired => write!(formatter, "требуемый капитал должен быть больше нуля"),
-            Self::InvalidProbability(value) => write!(formatter, "вероятность вне диапазона 0..=10000: {value}"),
+            Self::ZeroCapitalRequired => {
+                write!(formatter, "требуемый капитал должен быть больше нуля")
+            },
+            Self::InvalidProbability(value) => {
+                write!(formatter, "вероятность вне диапазона 0..=10000: {value}")
+            },
             Self::ZeroPeriod => write!(formatter, "период должен быть больше нуля"),
             Self::ArithmeticOverflow => write!(formatter, "переполнение при расчёте прибыли"),
         }
@@ -497,14 +525,10 @@ mod tests {
 
     fn sample_map() -> EconomicMap {
         let mut map = EconomicMap::new();
-        map.add_node(
-            EconomicNode::new("bank", "Банковский счёт", ValueForm::BankDeposit).unwrap(),
-        )
-        .unwrap();
-        map.add_node(
-            EconomicNode::new("stablecoin", "Стейблкоин", ValueForm::Stablecoin).unwrap(),
-        )
-        .unwrap();
+        map.add_node(EconomicNode::new("bank", "Банковский счёт", ValueForm::BankDeposit).unwrap())
+            .unwrap();
+        map.add_node(EconomicNode::new("stablecoin", "Стейблкоин", ValueForm::Stablecoin).unwrap())
+            .unwrap();
         map.add_node(
             EconomicNode::new(
                 "settlement",
@@ -515,14 +539,8 @@ mod tests {
         )
         .unwrap();
         map.add_relation(
-            EconomicRelation::new(
-                "r1",
-                "bank",
-                "stablecoin",
-                RelationKind::ConvertsInto,
-                None,
-            )
-            .unwrap(),
+            EconomicRelation::new("r1", "bank", "stablecoin", RelationKind::ConvertsInto, None)
+                .unwrap(),
         )
         .unwrap();
         map.add_relation(
@@ -569,7 +587,11 @@ mod tests {
         assert_eq!(candidates.len(), 1);
         assert_eq!(
             candidates[0].node_ids,
-            vec!["bank".to_string(), "stablecoin".to_string(), "settlement".to_string()]
+            vec![
+                "bank".to_string(),
+                "stablecoin".to_string(),
+                "settlement".to_string()
+            ]
         );
         assert_eq!(
             candidates[0].relation_ids,
@@ -580,11 +602,16 @@ mod tests {
     #[test]
     fn computes_probability_weighted_net_profit() {
         let map = sample_map();
-        let result = DiscoveryEngine.evaluate(&map, &sample_hypothesis("h1", 1_000_000)).unwrap();
+        let result = DiscoveryEngine
+            .evaluate(&map, &sample_hypothesis("h1", 1_000_000))
+            .unwrap();
         assert_eq!(result.base_net_profit_minor, 700_000);
         assert_eq!(result.expected_net_profit_minor, 510_000);
         assert_eq!(result.return_on_capital_bps, 10_200);
-        assert_eq!(result.classification, ProfitClassification::PositiveExpectedProfit);
+        assert_eq!(
+            result.classification,
+            ProfitClassification::PositiveExpectedProfit
+        );
     }
 
     #[test]
@@ -607,18 +634,36 @@ mod tests {
         let mut eur = sample_hypothesis("eur", 1_000_000);
         eur.estimate.currency = CurrencyCode::new("EUR").unwrap();
 
-        let ranked = DiscoveryEngine.rank_by_currency(&map, &[usd.clone(), eur]).unwrap();
+        let ranked = DiscoveryEngine
+            .rank_by_currency(&map, &[usd.clone(), eur])
+            .unwrap();
         assert_eq!(ranked.len(), 2);
-        assert_eq!(ranked.get(&CurrencyCode::new("USD").unwrap()).unwrap().len(), 1);
-        assert_eq!(ranked.get(&CurrencyCode::new("EUR").unwrap()).unwrap().len(), 1);
+        assert_eq!(
+            ranked
+                .get(&CurrencyCode::new("USD").unwrap())
+                .unwrap()
+                .len(),
+            1
+        );
+        assert_eq!(
+            ranked
+                .get(&CurrencyCode::new("EUR").unwrap())
+                .unwrap()
+                .len(),
+            1
+        );
 
     }
 
     #[test]
     fn rejects_missing_economic_objects() {
         let mut map = sample_map();
-        let relation = EconomicRelation::new("r3", "unknown", "bank", RelationKind::Transfers, None).unwrap();
-        assert_eq!(map.add_relation(relation), Err(DiscoveryError::MissingNode("unknown".into())));
+        let relation =
+            EconomicRelation::new("r3", "unknown", "bank", RelationKind::Transfers, None).unwrap();
+        assert_eq!(
+            map.add_relation(relation),
+            Err(DiscoveryError::MissingNode("unknown".into()))
+        );
     }
 
     #[test]
@@ -657,9 +702,14 @@ mod tests {
     #[test]
     fn keeps_negative_expected_profit_visible() {
         let map = sample_map();
-        let result = DiscoveryEngine.evaluate(&map, &sample_hypothesis("loss", 100_000)).unwrap();
+        let result = DiscoveryEngine
+            .evaluate(&map, &sample_hypothesis("loss", 100_000))
+            .unwrap();
         assert!(result.expected_net_profit_minor < 0);
-        assert_eq!(result.classification, ProfitClassification::NegativeExpectedProfit);
+        assert_eq!(
+            result.classification,
+            ProfitClassification::NegativeExpectedProfit
+        );
     }
 
     #[test]
