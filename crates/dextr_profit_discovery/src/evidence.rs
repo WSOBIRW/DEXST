@@ -4,10 +4,10 @@
 //! Наличие ссылки на источник не означает истинность утверждения:
 //! независимая проверка качества источника остаётся отдельной задачей.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 
-use super::EconomicMap;
+use super::{EconomicMap, OpportunityHypothesis};
 
 /// Тип происхождения доказательного материала.
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
@@ -148,6 +148,7 @@ pub struct EvidenceLedger {
     evidence: BTreeMap<String, EvidenceRecord>,
     facts: BTreeMap<String, ObservedFact>,
     falsifications: BTreeMap<String, FalsificationAttempt>,
+    registered_hypotheses: BTreeSet<String>,
 }
 
 impl EvidenceLedger {
@@ -181,11 +182,28 @@ impl EvidenceLedger {
         Ok(())
     }
 
+    pub fn register_hypothesis(
+        &mut self,
+        map: &EconomicMap,
+        hypothesis: &OpportunityHypothesis,
+    ) -> Result<(), EvidenceError> {
+        hypothesis
+            .validate_against(map)
+            .map_err(|_| EvidenceError::InvalidHypothesis(hypothesis.id.clone()))?;
+        if !self.registered_hypotheses.insert(hypothesis.id.clone()) {
+            return Err(EvidenceError::DuplicateHypothesis(hypothesis.id.clone()));
+        }
+        Ok(())
+    }
+
     pub fn add_falsification(
         &mut self,
         attempt: FalsificationAttempt,
     ) -> Result<(), EvidenceError> {
         attempt.validate()?;
+        if !self.registered_hypotheses.contains(&attempt.hypothesis_id) {
+            return Err(EvidenceError::UnknownHypothesis(attempt.hypothesis_id));
+        }
         if self.falsifications.contains_key(&attempt.id) {
             return Err(EvidenceError::DuplicateAttempt(attempt.id));
         }
@@ -271,6 +289,9 @@ pub enum EvidenceError {
     DuplicateAttempt(String),
     UnknownEvidence(String),
     UnknownSubject(String),
+    InvalidHypothesis(String),
+    DuplicateHypothesis(String),
+    UnknownHypothesis(String),
 }
 
 impl fmt::Display for EvidenceError {
@@ -287,6 +308,9 @@ impl fmt::Display for EvidenceError {
             Self::DuplicateAttempt(id) => write!(formatter, "повторная попытка проверки: {id}"),
             Self::UnknownEvidence(id) => write!(formatter, "доказательство не найдено: {id}"),
             Self::UnknownSubject(id) => write!(formatter, "экономический объект не найден: {id}"),
+            Self::InvalidHypothesis(id) => write!(formatter, "гипотеза не прошла проверку: {id}"),
+            Self::DuplicateHypothesis(id) => write!(formatter, "гипотеза уже зарегистрирована: {id}"),
+            Self::UnknownHypothesis(id) => write!(formatter, "гипотеза не зарегистрирована: {id}"),
         }
     }
 }
@@ -388,10 +412,47 @@ mod tests {
         assert_eq!(invalid.validate(), Err(EvidenceError::InvalidDigest));
     }
 
+    fn hypothesis() -> crate::OpportunityHypothesis {
+        crate::OpportunityHypothesis {
+            id: "hyp-1".into(),
+            title: "Проверяемая гипотеза".into(),
+            description: "Тест".into(),
+            node_ids: vec!["asset-1".into()],
+            relation_ids: vec!["r-missing".into()],
+            estimate: crate::ProfitEstimate {
+                currency: crate::CurrencyCode::new("USD").unwrap(),
+                gross_revenue_minor: 100,
+                direct_costs_minor: 10,
+                operating_costs_minor: 10,
+                financing_costs_minor: 0,
+                tax_costs_minor: 0,
+                downside_loss_minor: 10,
+                probability_bps: 5_000,
+                capital_required_minor: 100,
+                opportunity_cost_minor: 0,
+                period_days: 30,
+            },
+        }
+    }
+
     #[test]
     fn records_falsification_attempts_with_evidence() {
         let mut ledger = EvidenceLedger::new();
         ledger.add_evidence(evidence("e1")).unwrap();
+        let mut map = map();
+        map.add_node(
+            EconomicNode::new("asset-2", "Связанный актив", ValueForm::Other("актив".into()))
+                .unwrap(),
+        )
+        .unwrap();
+        map.add_relation(crate::EconomicRelation::new(
+            "r-missing",
+            "asset-1",
+            "asset-2",
+            crate::RelationKind::Enables,
+            None,
+        ).unwrap()).unwrap();
+        ledger.register_hypothesis(&map, &hypothesis()).unwrap();
         let attempt = FalsificationAttempt {
             id: "test-1".into(),
             hypothesis_id: "hyp-1".into(),
@@ -404,6 +465,24 @@ mod tests {
 
         let stored = ledger.falsifications_for("hyp-1").next().unwrap();
         assert_eq!(stored.outcome, FalsificationOutcome::Refuted);
+    }
+
+    #[test]
+    fn refuses_falsification_for_unregistered_hypothesis() {
+        let mut ledger = EvidenceLedger::new();
+        ledger.add_evidence(evidence("e1")).unwrap();
+        let attempt = FalsificationAttempt {
+            id: "test-unknown".into(),
+            hypothesis_id: "unknown".into(),
+            method: "Проверка".into(),
+            outcome: FalsificationOutcome::Inconclusive,
+            evidence_ids: vec!["e1".into()],
+            notes: String::new(),
+        };
+        assert_eq!(
+            ledger.add_falsification(attempt),
+            Err(EvidenceError::UnknownHypothesis("unknown".into()))
+        );
     }
 
     #[test]
