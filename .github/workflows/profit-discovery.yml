@@ -1,0 +1,35 @@
+name: Проверка ядра обнаружения прибыли
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "crates/dextr_profit_discovery/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/profit-discovery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  profit-discovery:
+    name: Проверка dextr_profit_discovery
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получение исходного кода
+        uses: actions/checkout@v6
+
+      - name: Установка Rust toolchain
+        run: |
+          rustc --version
+          cargo --version
+
+      - name: Проверка форматирования компонента
+        run: cargo fmt --package dextr_profit_discovery -- --check
+
+      - name: Запуск тестов компонента
+        run: cargo test --package dextr_profit_discovery
