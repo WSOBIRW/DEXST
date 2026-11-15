@@ -217,6 +217,11 @@ impl EvidenceLedger {
         Ok(())
     }
 
+    /// Последовательный доступ ко всем наблюдаемым фактам журнала.
+    pub fn facts(&self) -> impl Iterator<Item = &ObservedFact> {
+        self.facts.values()
+    }
+
     pub fn evidence(&self, id: &str) -> Option<&EvidenceRecord> {
         self.evidence.get(id)
     }
