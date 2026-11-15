@@ -497,11 +497,45 @@ mod tests {
 
     fn sample_map() -> EconomicMap {
         let mut map = EconomicMap::new();
-        map.add_node(EconomicNode::new("bank", "Банковский счёт", ValueForm::BankDeposit).unwrap()).unwrap();
-        map.add_node(EconomicNode::new("stablecoin", "Стейблкоин", ValueForm::Stablecoin).unwrap()).unwrap();
-        map.add_node(EconomicNode::new("settlement", "Международный расчёт", ValueForm::Other("расчётная операция".into())).unwrap()).unwrap();
-        map.add_relation(EconomicRelation::new("r1", "bank", "stablecoin", RelationKind::ConvertsInto, None).unwrap()).unwrap();
-        map.add_relation(EconomicRelation::new("r2", "stablecoin", "settlement", RelationKind::Enables, None).unwrap()).unwrap();
+        map.add_node(
+            EconomicNode::new("bank", "Банковский счёт", ValueForm::BankDeposit).unwrap(),
+        )
+        .unwrap();
+        map.add_node(
+            EconomicNode::new("stablecoin", "Стейблкоин", ValueForm::Stablecoin).unwrap(),
+        )
+        .unwrap();
+        map.add_node(
+            EconomicNode::new(
+                "settlement",
+                "Международный расчёт",
+                ValueForm::Other("расчётная операция".into()),
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        map.add_relation(
+            EconomicRelation::new(
+                "r1",
+                "bank",
+                "stablecoin",
+                RelationKind::ConvertsInto,
+                None,
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        map.add_relation(
+            EconomicRelation::new(
+                "r2",
+                "stablecoin",
+                "settlement",
+                RelationKind::Enables,
+                None,
+            )
+            .unwrap(),
+        )
+        .unwrap();
         map
     }
 
@@ -533,8 +567,14 @@ mod tests {
         let map = sample_map();
         let candidates = map.two_step_candidates();
         assert_eq!(candidates.len(), 1);
-        assert_eq!(candidates[0].node_ids, ["bank", "stablecoin", "settlement"]);
-        assert_eq!(candidates[0].relation_ids, ["r1", "r2"]);
+        assert_eq!(
+            candidates[0].node_ids,
+            vec!["bank".to_string(), "stablecoin".to_string(), "settlement".to_string()]
+        );
+        assert_eq!(
+            candidates[0].relation_ids,
+            vec!["r1".to_string(), "r2".to_string()]
+        );
     }
 
     #[test]
@@ -558,6 +598,22 @@ mod tests {
         let usd = ranked.get(&CurrencyCode::new("USD").unwrap()).unwrap();
         assert_eq!(usd[0].id, "higher");
         assert_eq!(usd[1].id, "lower");
+    }
+
+    #[test]
+    fn keeps_different_currencies_in_separate_groups() {
+        let map = sample_map();
+        let mut usd = sample_hypothesis("usd", 1_000_000);
+        let mut eur = sample_hypothesis("eur", 1_000_000);
+        eur.estimate.currency = CurrencyCode::new("EUR").unwrap();
+
+        let ranked = DiscoveryEngine.rank_by_currency(&map, &[usd.clone(), eur]).unwrap();
+        assert_eq!(ranked.len(), 2);
+        assert_eq!(ranked.get(&CurrencyCode::new("USD").unwrap()).unwrap().len(), 1);
+        assert_eq!(ranked.get(&CurrencyCode::new("EUR").unwrap()).unwrap().len(), 1);
+
+        usd.estimate.currency = CurrencyCode::new("USD").unwrap();
+        assert_eq!(usd.estimate.currency.as_str(), "USD");
     }
 
     #[test]
