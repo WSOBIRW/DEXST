@@ -1,6 +1,15 @@
 name: Проверка ядра обнаружения прибыли
 
 on:
+  push:
+    branches:
+      - feature/profit-centric-discovery-kernel
+    paths:
+      - "crates/dextr_profit_discovery/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/profit-discovery.yml"
   pull_request:
     branches:
       - main
