@@ -1,3 +1,6 @@
+pub mod anomaly;
+pub use anomaly::{detect_anomalies, AnomalyCandidate, AnomalyConfig, AnomalyDirection, AnomalyError};
+
 //! Минимальное экономическое ядро Dexter Studio.
 //!
 //! Ядро описывает формы стоимости, отношения между ними и проверяемые
