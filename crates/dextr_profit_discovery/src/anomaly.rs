@@ -54,7 +54,11 @@ pub struct AnomalyCandidate {
 pub enum AnomalyError {
     InvalidConfiguration,
     DuplicateFactId(String),
-    DuplicateTimestamp { subject_id: String, metric: String, timestamp: u64 },
+    DuplicateTimestamp {
+        subject_id: String,
+        metric: String,
+        timestamp: u64,
+    },
     ArithmeticOverflow,
 }
 
@@ -63,8 +67,14 @@ impl std::fmt::Display for AnomalyError {
         match self {
             Self::InvalidConfiguration => write!(f, "некорректные параметры обнаружения"),
             Self::DuplicateFactId(id) => write!(f, "повторный идентификатор факта: {id}"),
-            Self::DuplicateTimestamp { subject_id, metric, timestamp } =>
-                write!(f, "повторная временная отметка для {subject_id}/{metric}: {timestamp}"),
+            Self::DuplicateTimestamp {
+                subject_id,
+                metric,
+                timestamp,
+            } => write!(
+                f,
+                "повторная временная отметка для {subject_id}/{metric}: {timestamp}"
+            ),
             Self::ArithmeticOverflow => write!(f, "переполнение при статистическом расчёте"),
         }
     }
@@ -87,8 +97,7 @@ pub fn detect_anomalies(
     }
 
     let mut ids = BTreeSet::new();
-    let mut groups: BTreeMap<(String, String, String, u64), Vec<&ObservedFact>> =
-        BTreeMap::new();
+    let mut groups: BTreeMap<(String, String, String, u64), Vec<&ObservedFact>> = BTreeMap::new();
 
     for fact in facts {
         if !ids.insert(fact.id.as_str()) {
@@ -129,8 +138,12 @@ pub fn detect_anomalies(
                 let baseline = median(&mut history.clone())?;
                 let mut deviations = history
                     .iter()
-                    .map(|value| value.checked_sub(baseline).and_then(i128::checked_abs)
-                        .ok_or(AnomalyError::ArithmeticOverflow))
+                    .map(|value| {
+                        value
+                            .checked_sub(baseline)
+                            .and_then(i128::checked_abs)
+                            .ok_or(AnomalyError::ArithmeticOverflow)
+                    })
                     .collect::<Result<Vec<_>, _>>()?;
                 let mad = median(&mut deviations)?;
                 let deviation = fact
@@ -244,7 +257,11 @@ mod tests {
             fact("a5", 10, 5, "USD", 1),
             fact("b1", 1000, 6, "EUR", 100),
         ];
-        assert!(detect_anomalies(&facts, AnomalyConfig::default()).unwrap().is_empty());
+        assert!(
+            detect_anomalies(&facts, AnomalyConfig::default())
+                .unwrap()
+                .is_empty()
+        );
     }
 
     #[test]
@@ -257,26 +274,37 @@ mod tests {
             fact("f5", 7, 5, "units", 1),
             fact("f6", 8, 6, "units", 1),
         ];
-        assert_eq!(detect_anomalies(&facts, AnomalyConfig::default()).unwrap().len(), 1);
+        assert_eq!(
+            detect_anomalies(&facts, AnomalyConfig::default())
+                .unwrap()
+                .len(),
+            1
+        );
     }
 
     #[test]
     fn rejects_duplicate_timestamps_and_fact_ids() {
-        let duplicate_time = vec![
-            fact("a", 1, 1, "u", 1),
-            fact("b", 2, 1, "u", 1),
-        ];
+        let duplicate_time = vec![fact("a", 1, 1, "u", 1), fact("b", 2, 1, "u", 1)];
         assert!(matches!(
-            detect_anomalies(&duplicate_time, AnomalyConfig { minimum_history: 3, mad_multiplier: 6 }),
+            detect_anomalies(
+                &duplicate_time,
+                AnomalyConfig {
+                    minimum_history: 3,
+                    mad_multiplier: 6
+                }
+            ),
             Err(AnomalyError::DuplicateTimestamp { .. })
         ));
 
-        let duplicate_id = vec![
-            fact("same", 1, 1, "u", 1),
-            fact("same", 2, 2, "v", 1),
-        ];
+        let duplicate_id = vec![fact("same", 1, 1, "u", 1), fact("same", 2, 2, "v", 1)];
         assert_eq!(
-            detect_anomalies(&duplicate_id, AnomalyConfig { minimum_history: 3, mad_multiplier: 6 }),
+            detect_anomalies(
+                &duplicate_id,
+                AnomalyConfig {
+                    minimum_history: 3,
+                    mad_multiplier: 6
+                }
+            ),
             Err(AnomalyError::DuplicateFactId("same".into()))
         );
     }
@@ -284,7 +312,13 @@ mod tests {
     #[test]
     fn rejects_invalid_configuration() {
         assert_eq!(
-            detect_anomalies(&[], AnomalyConfig { minimum_history: 2, mad_multiplier: 6 }),
+            detect_anomalies(
+                &[],
+                AnomalyConfig {
+                    minimum_history: 2,
+                    mad_multiplier: 6
+                }
+            ),
             Err(AnomalyError::InvalidConfiguration)
         );
     }
