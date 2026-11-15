@@ -316,7 +316,9 @@ impl fmt::Display for EvidenceError {
             Self::UnknownEvidence(id) => write!(formatter, "доказательство не найдено: {id}"),
             Self::UnknownSubject(id) => write!(formatter, "экономический объект не найден: {id}"),
             Self::InvalidHypothesis(id) => write!(formatter, "гипотеза не прошла проверку: {id}"),
-            Self::DuplicateHypothesis(id) => write!(formatter, "гипотеза уже зарегистрирована: {id}"),
+            Self::DuplicateHypothesis(id) => {
+                write!(formatter, "гипотеза уже зарегистрирована: {id}")
+            },
             Self::UnknownHypothesis(id) => write!(formatter, "гипотеза не зарегистрирована: {id}"),
         }
     }
@@ -452,17 +454,25 @@ mod tests {
         ledger.add_evidence(evidence("e1")).unwrap();
         let mut map = map();
         map.add_node(
-            EconomicNode::new("asset-2", "Связанный актив", ValueForm::Other("актив".into()))
-                .unwrap(),
+            EconomicNode::new(
+                "asset-2",
+                "Связанный актив",
+                ValueForm::Other("актив".into()),
+            )
+            .unwrap(),
         )
         .unwrap();
-        map.add_relation(crate::EconomicRelation::new(
-            "r-missing",
-            "asset-1",
-            "asset-2",
-            crate::RelationKind::Enables,
-            None,
-        ).unwrap()).unwrap();
+        map.add_relation(
+            crate::EconomicRelation::new(
+                "r-missing",
+                "asset-1",
+                "asset-2",
+                crate::RelationKind::Enables,
+                None,
+            )
+            .unwrap(),
+        )
+        .unwrap();
         ledger.register_hypothesis(&map, &hypothesis()).unwrap();
         let attempt = FalsificationAttempt {
             id: "test-1".into(),
