@@ -1,5 +1,3 @@
-pub mod anomaly;
-pub use anomaly::{detect_anomalies, AnomalyCandidate, AnomalyConfig, AnomalyDirection, AnomalyError};
 
 //! Минимальное экономическое ядро Dexter Studio.
 //!
@@ -8,6 +6,9 @@ pub use anomaly::{detect_anomalies, AnomalyCandidate, AnomalyConfig, AnomalyDire
 //! считает синтетические данные доказательством реальной доходности.
 
 #![forbid(unsafe_code)]
+
+pub mod anomaly;
+pub use anomaly::{detect_anomalies, AnomalyCandidate, AnomalyConfig, AnomalyDirection, AnomalyError};
 
 pub mod evidence;
 pub use evidence::*;
