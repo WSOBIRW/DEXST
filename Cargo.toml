@@ -232,6 +232,7 @@ members = [
     "crates/dextr_safety",
     "crates/dextr_daic",
     "crates/dextr_ai_bus",
+    "crates/dextr_profit_discovery",
     "crates/dextr_session_ai_relay",
     "crates/dextr_locale",
     "crates/zed_actions",
