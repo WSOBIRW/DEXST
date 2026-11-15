@@ -165,11 +165,7 @@ impl EvidenceLedger {
         Ok(())
     }
 
-    pub fn add_fact(
-        &mut self,
-        map: &EconomicMap,
-        fact: ObservedFact,
-    ) -> Result<(), EvidenceError> {
+    pub fn add_fact(&mut self, map: &EconomicMap, fact: ObservedFact) -> Result<(), EvidenceError> {
         fact.validate()?;
         if map.node(&fact.subject_id).is_none() {
             return Err(EvidenceError::UnknownSubject(fact.subject_id));
@@ -298,12 +294,23 @@ impl fmt::Display for EvidenceError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::EmptyRequiredField => write!(formatter, "обязательное поле пусто"),
-            Self::InvalidDigest => write!(formatter, "контрольный отпечаток должен содержать 64 hex-символа"),
-            Self::PublicationAfterCapture => write!(formatter, "дата публикации позже даты получения"),
+            Self::InvalidDigest => write!(
+                formatter,
+                "контрольный отпечаток должен содержать 64 hex-символа"
+            ),
+            Self::PublicationAfterCapture => {
+                write!(formatter, "дата публикации позже даты получения")
+            }
             Self::ZeroScale => write!(formatter, "масштаб наблюдения должен быть больше нуля"),
-            Self::FactWithoutEvidence => write!(formatter, "факт не содержит ссылок на доказательства"),
-            Self::AttemptWithoutEvidence => write!(formatter, "попытка проверки не содержит доказательств"),
-            Self::DuplicateEvidence(id) => write!(formatter, "повторная запись доказательства: {id}"),
+            Self::FactWithoutEvidence => {
+                write!(formatter, "факт не содержит ссылок на доказательства")
+            }
+            Self::AttemptWithoutEvidence => {
+                write!(formatter, "попытка проверки не содержит доказательств")
+            }
+            Self::DuplicateEvidence(id) => {
+                write!(formatter, "повторная запись доказательства: {id}")
+            }
             Self::DuplicateFact(id) => write!(formatter, "повторная запись факта: {id}"),
             Self::DuplicateAttempt(id) => write!(formatter, "повторная попытка проверки: {id}"),
             Self::UnknownEvidence(id) => write!(formatter, "доказательство не найдено: {id}"),
@@ -320,13 +327,17 @@ impl std::error::Error for EvidenceError {}
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{EconomicNode, EconomicMap, ValueForm};
+    use crate::{EconomicMap, EconomicNode, ValueForm};
 
     fn map() -> EconomicMap {
         let mut map = EconomicMap::new();
         map.add_node(
-            EconomicNode::new("asset-1", "Тестовый актив", ValueForm::Other("актив".into()))
-                .unwrap(),
+            EconomicNode::new(
+                "asset-1",
+                "Тестовый актив",
+                ValueForm::Other("актив".into()),
+            )
+            .unwrap(),
         )
         .unwrap();
         map
