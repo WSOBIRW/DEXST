@@ -603,7 +603,7 @@ mod tests {
     #[test]
     fn keeps_different_currencies_in_separate_groups() {
         let map = sample_map();
-        let mut usd = sample_hypothesis("usd", 1_000_000);
+        let usd = sample_hypothesis("usd", 1_000_000);
         let mut eur = sample_hypothesis("eur", 1_000_000);
         eur.estimate.currency = CurrencyCode::new("EUR").unwrap();
 
@@ -612,8 +612,6 @@ mod tests {
         assert_eq!(ranked.get(&CurrencyCode::new("USD").unwrap()).unwrap().len(), 1);
         assert_eq!(ranked.get(&CurrencyCode::new("EUR").unwrap()).unwrap().len(), 1);
 
-        usd.estimate.currency = CurrencyCode::new("USD").unwrap();
-        assert_eq!(usd.estimate.currency.as_str(), "USD");
     }
 
     #[test]
