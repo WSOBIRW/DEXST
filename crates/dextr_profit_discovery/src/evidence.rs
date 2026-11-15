@@ -318,7 +318,7 @@ impl fmt::Display for EvidenceError {
             Self::InvalidHypothesis(id) => write!(formatter, "гипотеза не прошла проверку: {id}"),
             Self::DuplicateHypothesis(id) => {
                 write!(formatter, "гипотеза уже зарегистрирована: {id}")
-            },
+            }
             Self::UnknownHypothesis(id) => write!(formatter, "гипотеза не зарегистрирована: {id}"),
         }
     }
