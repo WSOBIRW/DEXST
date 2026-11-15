@@ -9,6 +9,7 @@
 pub mod anomaly;
 pub use anomaly::{
     AnomalyCandidate, AnomalyConfig, AnomalyDirection, AnomalyError, detect_anomalies,
+    detect_ledger_anomalies,
 };
 
 pub mod evidence;
