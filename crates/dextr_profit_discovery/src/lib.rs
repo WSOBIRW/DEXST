@@ -8,7 +8,9 @@
 #![forbid(unsafe_code)]
 
 pub mod anomaly;
-pub use anomaly::{detect_anomalies, AnomalyCandidate, AnomalyConfig, AnomalyDirection, AnomalyError};
+pub use anomaly::{
+    AnomalyCandidate, AnomalyConfig, AnomalyDirection, AnomalyError, detect_anomalies,
+};
 
 pub mod evidence;
 pub use evidence::*;
