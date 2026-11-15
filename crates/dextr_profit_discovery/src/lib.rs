@@ -487,30 +487,30 @@ impl fmt::Display for DiscoveryError {
             Self::EmptyIdentifierOrLabel => write!(formatter, "пустой идентификатор или название"),
             Self::EmptyHypothesisStructure => {
                 write!(formatter, "гипотеза не содержит объектов или отношений")
-            },
+            }
             Self::DuplicateNode(id) => write!(formatter, "повторный экономический объект: {id}"),
             Self::DuplicateRelation(id) => write!(formatter, "повторное отношение: {id}"),
             Self::MissingNode(id) => write!(formatter, "экономический объект не найден: {id}"),
             Self::MissingRelation(id) => {
                 write!(formatter, "экономическое отношение не найдено: {id}")
-            },
+            }
             Self::SelfRelation(id) => {
                 write!(formatter, "самоссылочное отношение не допускается: {id}")
-            },
+            }
             Self::RelationOutsideHypothesis(id) => {
                 write!(formatter, "отношение выходит за границы гипотезы: {id}")
-            },
+            }
             Self::DuplicateHypothesisReference => {
                 write!(formatter, "повторная ссылка внутри гипотезы")
-            },
+            }
             Self::InvalidCurrencyCode(code) => write!(formatter, "некорректный код валюты: {code}"),
             Self::NegativeAmount(name) => write!(formatter, "отрицательное значение поля: {name}"),
             Self::ZeroCapitalRequired => {
                 write!(formatter, "требуемый капитал должен быть больше нуля")
-            },
+            }
             Self::InvalidProbability(value) => {
                 write!(formatter, "вероятность вне диапазона 0..=10000: {value}")
-            },
+            }
             Self::ZeroPeriod => write!(formatter, "период должен быть больше нуля"),
             Self::ArithmeticOverflow => write!(formatter, "переполнение при расчёте прибыли"),
         }
@@ -652,7 +652,6 @@ mod tests {
                 .len(),
             1
         );
-
     }
 
     #[test]
