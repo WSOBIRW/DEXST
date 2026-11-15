@@ -323,6 +323,56 @@ mod tests {
     }
 
     #[test]
+    fn analyzes_facts_directly_from_evidence_ledger() {
+        use super::super::{EconomicMap, EconomicNode, ValueForm};
+
+        let mut map = EconomicMap::new();
+        map.add_node(
+            EconomicNode::new("asset", "Экономический объект", ValueForm::Other("тест".into()))
+                .unwrap(),
+        )
+        .unwrap();
+
+        let mut ledger = EvidenceLedger::new();
+        for index in 1..=6 {
+            let id = format!("f{index}");
+            ledger
+                .add_evidence(super::super::evidence::EvidenceRecord {
+                    id: format!("e-{id}"),
+                    source_uri: format!("https://example.invalid/{id}"),
+                    publisher: "Тестовый источник".into(),
+                    source_kind: super::super::evidence::EvidenceSourceKind::Primary,
+                    digest_algorithm: super::super::evidence::DigestAlgorithm::Sha256,
+                    content_digest_hex: "0".repeat(64),
+                    published_at_unix_ms: None,
+                    captured_at_unix_ms: index,
+                    limitations: vec!["Синтетический тест".into()],
+                })
+                .unwrap();
+            ledger
+                .add_fact(
+                    &map,
+                    ObservedFact {
+                        id: id.clone(),
+                        subject_id: "asset".into(),
+                        metric: "volume".into(),
+                        value_scaled: if index == 6 { 500 } else { 100 },
+                        scale: 100,
+                        unit: "USD".into(),
+                        observed_at_unix_ms: index,
+                        evidence_ids: vec![format!("e-{id}")],
+                    },
+                )
+                .unwrap();
+        }
+
+        let found = detect_ledger_anomalies(&ledger, AnomalyConfig::default()).unwrap();
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].fact_id, "f6");
+        assert_eq!(found[0].scale, 100);
+    }
+
+    #[test]
     fn rejects_invalid_configuration() {
         assert_eq!(
             detect_anomalies(
