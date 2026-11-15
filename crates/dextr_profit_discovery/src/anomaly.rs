@@ -6,7 +6,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use super::evidence::ObservedFact;
+use super::evidence::{EvidenceLedger, ObservedFact};
 
 /// Параметры обнаружения аномалий.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -39,6 +39,8 @@ pub struct AnomalyCandidate {
     pub subject_id: String,
     pub metric: String,
     pub unit: String,
+    /// Делитель для восстановления исходного значения: value_scaled / scale.
+    pub scale: u64,
     pub fact_id: String,
     pub observed_at_unix_ms: u64,
     pub observed_value_scaled: i128,
@@ -115,7 +117,7 @@ pub fn detect_anomalies(
     }
 
     let mut anomalies = Vec::new();
-    for ((subject_id, metric, unit, _scale), mut series) in groups {
+    for ((subject_id, metric, unit, scale), mut series) in groups {
         series.sort_by(|a, b| {
             a.observed_at_unix_ms
                 .cmp(&b.observed_at_unix_ms)
@@ -165,6 +167,7 @@ pub fn detect_anomalies(
                         subject_id: subject_id.clone(),
                         metric: metric.clone(),
                         unit: unit.clone(),
+                        scale,
                         fact_id: fact.id.clone(),
                         observed_at_unix_ms: fact.observed_at_unix_ms,
                         observed_value_scaled: fact.value_scaled,
@@ -192,6 +195,15 @@ pub fn detect_anomalies(
             .then_with(|| a.fact_id.cmp(&b.fact_id))
     });
     Ok(anomalies)
+}
+
+/// Запускает детектор непосредственно по фактам доказательного журнала.
+pub fn detect_ledger_anomalies(
+    ledger: &EvidenceLedger,
+    config: AnomalyConfig,
+) -> Result<Vec<AnomalyCandidate>, AnomalyError> {
+    let facts: Vec<ObservedFact> = ledger.facts().cloned().collect();
+    detect_anomalies(&facts, config)
 }
 
 fn median(values: &mut [i128]) -> Result<i128, AnomalyError> {
@@ -244,6 +256,7 @@ mod tests {
         assert_eq!(found.len(), 1);
         assert_eq!(found[0].fact_id, "f6");
         assert_eq!(found[0].baseline_median_scaled, 100);
+        assert_eq!(found[0].scale, 1);
         assert_eq!(found[0].direction, AnomalyDirection::AboveBaseline);
     }
 
