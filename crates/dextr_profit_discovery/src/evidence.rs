@@ -428,7 +428,7 @@ mod tests {
             id: "hyp-1".into(),
             title: "Проверяемая гипотеза".into(),
             description: "Тест".into(),
-            node_ids: vec!["asset-1".into()],
+            node_ids: vec!["asset-1".into(), "asset-2".into()],
             relation_ids: vec!["r-missing".into()],
             estimate: crate::ProfitEstimate {
                 currency: crate::CurrencyCode::new("USD").unwrap(),
